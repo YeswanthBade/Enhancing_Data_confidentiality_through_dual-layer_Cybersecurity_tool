@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+  <!-- Font Awesome icons (free version)-->
+  <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+  <!-- Google fonts-->
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+  <title>Crypto_Stegno</title>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='/css/styles.css') }}">
+
+  <style>
+    .timeline > li .timeline-image {
+      background-color: #2e70d5;
+    }
+    .layout {
+      display: none;
+    }
+
+    /* Add your custom styles here */
+    #divider {
+      border-left: 1px solid #ccc;
+      height: 100%;
+    }
+
+    #imgPreview,
+    #encryptedImgPreview,
+    #stegoImgPreview {
+      max-width: 250px;
+      max-height: 250px;
+      width: auto;
+      height: auto;
+    }
+  </style>
+</head>
+
+<!-- <body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <h2 style="color: white;">Crypto_Stegno</h2>
+    </div>
+  </nav> -->
+
+<body id="page-top">
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+      <!-- <a class="navbar-brand" href="#page-top"><img src="assets/img/navbar-logo.svg" alt="..." /></a> -->
+      <h1 style="color: rgb(235, 235, 235); ">Crypto_Stegno</h1>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+        aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        Menu
+        <i class="fas fa-bars ms-1"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav text-uppercase ms-auto py-4 py-lg-0">
+          <li class="nav-item"><a class="nav-link" href="#app">My App</a></li>
+          <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
+          <!-- <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li> -->
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Masthead-->
+  <header class="masthead">
+    <div class="container">
+      <div class="masthead-heading text-uppercase">Enhancement of Data Hiding</div>
+      <div class="masthead-subheading">using Image Steganography and AES Cryptography!</div>
+      <a class="btn btn-primary btn-xl text-uppercase" href="#app">Get Me There</a>
+    </div>
+  </header>
+  <div id="app">
+    <div class="dropdown m-2 p-2">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+        aria-expanded="false">
+        Encryption
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+        <li><a class="dropdown-item" href="#app" onclick="changeLayout('encryption')">Encryption</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#app" onclick="changeLayout('decryption')">Decryption</a></li>
+      </ul>
+    </div>
+
+    <!-- <hr class="hr" /> -->
+    <hr class="hr hr-blurry" />
+
+    <div id="encryptionLayout" class="layout" style="display: block;">
+      <!-- Your encryption UI elements go here -->
+
+      <div id="successAlertencryption" class="alert alert-success" style="display: none;">
+        <strong>Image </strong>Saved Successfully
+      </div>
+
+      <div class="container mt-5">
+        <div class="row">
+          <!-- Left Side: Input -->
+          <div class="col-md-6">
+            <h2>Image Selection</h2>
+
+            <!-- File Input for Image -->
+            <div class="mb-3">
+              <label for="imageInput" class="form-label">Choose Image</label>
+              <input type="file" class="form-control" id="imageInput" accept="image/*">
+            </div>
+
+            <!-- Image Preview -->
+            <div class="mb-3">
+              <img id="imgPreview" alt="Selected Image Preview" class="img-fluid">
+            </div>
+
+            <!-- Text Input Field -->
+            <div class="mb-3">
+              <label for="textInput" class="form-label">Text Input</label>
+              <textarea class="form-control" id="textInput" rows="3"></textarea>
+            </div>
+            <!-- Text Document Input Field -->
+<div class="mb-3">
+  <label for="textDocInput" class="form-label">Choose Text Document</label>
+  <input type="file" class="form-control" id="textDocInput" accept=".txt">
+</div>
+
+            <!-- Keypassphrase Field -->
+            <div class="mb-3">
+              <label for="keyPassphrase" class="form-label">Keypassphrase</label>
+              <input type="password" class="form-control" id="keyPassphrase">
+            </div>
+
+            <!-- Encrypt Button -->
+            <button type="button" class="btn btn-primary" id="encryptButton" onclick="encrypt()">Encrypt</button>
+          </div>
+
+          <!-- Divider -->
+          <div class="col-md-1" id="divider"></div>
+          <!-- Right Side: Output -->
+          <div class="col-md-5">
+            <h2>Encrypted Image</h2>
+            <!-- Encrypted Image Placeholder -->
+            <div class="border border-success p-4 mb-3">
+              <!-- Your encrypted image display goes here -->
+              <img id="encryptedImgPreview" alt="Encrypted Image Preview" class="img-fluid">
+            </div>
+
+            <!-- Save Button -->
+            <button type="button" class="btn btn-success" onclick="saveEncryptedImage()">Save</button>
+            <a id="downloadLink" style="display: none;"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="decryptionLayout" class="layout">
+      <!-- Your decryption UI elements go here -->
+      <div id="successAlertdecryption" class="alert alert-success" style="display: none;">
+        <strong>Data </strong>Saved Successfully
+      </div>
+
+      <div class="container mt-5">
+        <div class="row">
+          <!-- Left Side: Input -->
+          <div class="col-md-6">
+            <h2>Image and Text Input</h2>
+
+            <!-- File Input for Stego Image -->
+            <div class="mb-3">
+              <label for="stegoImageInput" class="form-label">Choose Stego Image</label>
+              <input type="file" class="form-control" id="stegoImageInput" accept="image/*">
+            </div>
+
+            <div class="border border-success p-4 mb-3">
+              <img id="stegoImgPreview" alt="Stego Image Preview" class="img-fluid">
+            </div>
+
+            <!-- Keypassphrase Field -->
+            <div class="mb-3">
+              <label for="decryptKeyPassphrase" class="form-label">Keypassphrase</label>
+              <input type="password" class="form-control" id="decryptKeyPassphrase">
+            </div>
+
+            <!-- Decrypt Button -->
+            <button type="button" class="btn btn-primary" id="decryptButton" onclick="decrypt()">Decrypt</button>
+          </div>
+
+          <!-- Divider -->
+          <div class="col-md-1" id="divider"></div>
+
+          <!-- Right Side: Output -->
+          <div class="col-md-5">
+            <h2>Decrypted Text and Output</h2>
+
+            <!-- Decrypted Text Placeholder -->
+            <div class="mb-3">
+              <label for="decryptedText" class="form-label">Decrypted Text</label>
+              <textarea class="form-control" id="decryptedText" rows="3" readonly></textarea>
+            </div>
+
+            <!-- Save Button for Decrypted Text -->
+            <button type="button" class="btn btn-success" onclick="saveDecryptedText()">Save</button>
+            <a id="downloadDecryptedTextLink" style="display: none;"></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Services-->
+  <section class="page-section" id="services">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-heading text-uppercase">Services</h2>
+        <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+      </div>
+      <div class="row text-center">
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fas fa-user-secret fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="my-3">Privacy</h4>
+          <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto
+            quo inventore harum ex magni, dicta impedit.</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fas fa-laptop fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="my-3">Responsive Design</h4>
+          <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto
+            quo inventore harum ex magni, dicta impedit.</p>
+        </div>
+        <div class="col-md-4">
+          <span class="fa-stack fa-4x">
+            <i class="fas fa-circle fa-stack-2x text-primary"></i>
+            <i class="fas fa-shield fa-stack-1x fa-inverse"></i>
+          </span>
+          <h4 class="my-3">Web Security</h4>
+          <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto
+            quo inventore harum ex magni, dicta impedit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About-->
+  <section class="page-section" id="about" >
+    <div class="container" >
+      <div class="text-center">
+        <h2 class="section-heading text-uppercase">About</h2>
+        <!-- <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3> -->
+        <br>
+      </div>
+      <ul class="timeline">
+        <li>
+          <div class="timeline-image"><img class="rounded-circle" style="height: 180px; width: 180px;" src="static/assets/img/about/lsb.jpeg" alt="..." />
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <!-- <h4>2009-2011</h4> -->
+              <h4 class="subheading">Image Steganography </h4>
+            </div>
+            <div class="timeline-body">
+              <p class="text-muted">Image steganography is the practice of concealing information within the data of digital images without altering their visual appearance. But, There is a <b>risk</b>  of leaking secret images, and cover-based methods are not very robust against degraded container images.</p>
+            </div>
+          </div>
+        </li>
+        <li class="timeline-inverted">
+          <div class="timeline-image"><img class="rounded-circle img-fluid"  src="static/assets/img/about/aes.jpg" alt="..." />
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <!-- <h4>March 2011</h4> -->
+              <h4 class="subheading">AES Cryptography</h4>
+            </div>
+            <div class="timeline-body">
+              <p class="text-muted">The Advanced Encryption Standard (AES) is an algorithm that uses the same key to encrypt and decrypt protected data. Instead of a single round of encryption, data is put through several rounds of substitution, transposition, and mixing to make it harder to compromise.</p>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div class="timeline-image"><img class="rounded-circle" style="height: 180px; width: 180px;" src="static/assets/img/about/lsbaes.jpeg" alt="..." />
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <!-- <h4>December 2015</h4> -->
+              <h4 class="subheading">Image Steganography with AES</h4>
+            </div>
+            <div class="timeline-body">
+              <p class="text-muted">a Hybrid approach that uses both steganography and cryptography to enhance the security of digital messages and avoids the all the potential risks of data leak. The main purpose of this approach is to Enhance the data confidentiality.</p>
+            </div>
+          </div>
+        </li>
+        <li class="timeline-inverted">
+          <div class="timeline-image"><img class="rounded-circle" style="height: 180px; width: 180px;" src="static/assets/img/about/scope.jpeg" alt="..." />
+          </div>
+          <div class="timeline-panel">
+            <div class="timeline-heading">
+              <!-- <h4>July 2020</h4> -->
+              <h4 class="subheading">Future Scope</h4>
+            </div>
+            <div class="timeline-body">
+              <p class="text-muted">This project aims to enhance the Data confidentiality.we will Explore and implement advanced steganographic methods enhance data hiding capacity and security for all types of Data files.</p>
+            </div>
+          </div>
+        </li>
+        <li class="timeline-inverted">
+          <div class="timeline-image">
+            <h4>
+              Be Part
+              <br />
+              Of Our
+              <br />
+              Story!
+            </h4>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+  <!-- Mentor-->
+  <section class="page-section bg-light" id="team">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-heading text-uppercase">Our Mentor</h2>
+        <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-4 ">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="static/assets/img/team/Mentor.jpg" alt="..." />
+            <h4>K SatyaNarayana Murthy</h4>
+            <p class="text-muted">Guidance & Mentor</p>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Twitter Profile"><i
+                class="fab fa-twitter"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Facebook Profile"><i
+                class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand LinkedIn Profile"><i
+                class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+          <p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam
+            veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team-->
+  <section class="page-section bg-light" id="team">
+    <div class="container">
+      <div class="text-center">
+        <h2 class="section-heading text-uppercase">Our Amazing Team</h2>
+        <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+      </div>
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="static/assets/img/team/Photo.jpg" alt="..." />
+            <h4>Dhanunjaya Rao Bali</h4>
+            <p class="text-muted">Lead Designer</p>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Twitter Profile"><i
+                class="fab fa-twitter"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand Facebook Profile"><i
+                class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Parveen Anand LinkedIn Profile"><i
+                class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="static/assets/img/team/Yeshwanth.jpg" alt="..." />
+            <h4>Yeshwanth Bade</h4>
+            <p class="text-muted">Lead Marketer</p>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen Twitter Profile"><i
+                class="fab fa-twitter"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen Facebook Profile"><i
+                class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Diana Petersen LinkedIn Profile"><i
+                class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="static/assets/img/team/Ganesh.jpg" alt="..." />
+            <h4>Ganesh </h4>
+            <p class="text-muted">Lead Developer</p>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Twitter Profile"><i
+                class="fab fa-twitter"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Facebook Profile"><i
+                class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker LinkedIn Profile"><i
+                class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="team-member">
+            <img class="mx-auto rounded-circle" src="static/assets/img/team/Mohansai.jpg" alt="..." />
+            <h4>MohanSai</h4>
+            <p class="text-muted">Lead Developer</p>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Twitter Profile"><i
+                class="fab fa-twitter"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker Facebook Profile"><i
+                class="fab fa-facebook-f"></i></a>
+            <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Larry Parker LinkedIn Profile"><i
+                class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-8 mx-auto text-center">
+          <p class="large text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut eaque, laboriosam
+            veritatis, quos non quis ad perspiciatis, totam corporis ea, alias ut unde.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer-->
+  <footer class="footer py-4" style="background-color: rgb(32, 31, 31) ; color: white;">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-4 text-lg-start">Copyright &copy; Your Website 2023</div>
+        <div class="col-lg-4 my-3 my-lg-0">
+          <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a class="btn btn-dark btn-social mx-2" href="#!" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+        <div class="col-lg-4 text-lg-end">
+          <a class="link-light text-decoration-none me-3" href="#!">Privacy Policy</a>
+          <a class="link-light text-decoration-none"  href="#!">Terms of Use</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+      document.getElementById('textDocInput').addEventListener('change', function() {
+    const reader = new FileReader();
+    reader.onload = function() {
+      document.getElementById('textInput').value = reader.result;
+    };
+    reader.onerror = function() {
+      console.error("Could not read the file");
+    };
+    if (this.files[0]) {
+      reader.readAsText(this.files[0]);
+    }
+  });
+    function showSuccessAlert() {
+      document.getElementById('successAlertencryption').style.display = 'block';
+      document.getElementById('successAlertdecryption').style.display = 'block';
+
+      setTimeout(function () {
+        successAlertencryption.style.display = 'none';
+        successAlertdecryption.style.display = 'none';
+      }, 3000);
+    }
+    function encrypt() {
+      // Retrieve input values
+      var coverimage = document.getElementById('imageInput').files[0];
+      var data = document.getElementById('textInput').value;
+      var key = document.getElementById('keyPassphrase').value;
+
+      // Create FormData object to send data to server
+      var formData = new FormData();
+      formData.append('coverimage', coverimage);
+      formData.append('data', data);
+      formData.append('key', key);
+
+      // Send data to server via AJAX
+      fetch('/encrypt', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => {
+          if (response.ok) {
+            // If response is successful, update image preview with result image
+            return response.blob();
+          } else {
+            // If response is not successful, log error
+            console.error('Error encrypting data:', response.statusText);
+          }
+        })
+        .then(blob => {
+          // Display result image
+          var encryptedImgPreview = document.getElementById('encryptedImgPreview');
+          encryptedImgPreview.src = URL.createObjectURL(blob);
+          encryptedImgPreview.style.display = 'block';
+
+          // Show success alert
+          showSuccessAlert();
+        })
+        .catch(error => {
+          console.error('Error encrypting data:', error);
+        });
+    }
+    // Add event listeners for file input changes
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+      // Preview selected image
+      var imgPreview = document.getElementById('imgPreview');
+      imgPreview.src = URL.createObjectURL(event.target.files[0]);
+      imgPreview.style.display = 'block';
+    });
+
+    document.getElementById('stegoImageInput').addEventListener('change', function (event) {
+      // Preview selected stego image
+      var stegoImgPreview = document.getElementById('stegoImgPreview');
+      stegoImgPreview.src = URL.createObjectURL(event.target.files[0]);
+      stegoImgPreview.style.display = 'block';
+    });
+    function decrypt() {
+      // Retrieve the stego image and key passphrase input values
+      var stegoImage = document.getElementById('stegoImageInput').files[0];
+      var key = document.getElementById('decryptKeyPassphrase').value;
+
+      // Prepare FormData object for sending the stego image and key to the server
+      var formData = new FormData();
+      formData.append('stegoImage', stegoImage);
+      formData.append('key', key);
+
+      // Use Fetch API to send data to the server for decryption
+      fetch('/decrypt', {
+        method: 'POST',
+        body: formData
+      })
+        .then(response => {
+          if (response.ok) {
+            return response.text(); // Assuming the server returns the decrypted text as a plain string
+          } else {
+            throw new Error('Failed to decrypt the data.');
+          }
+        })
+        .then(decryptedText => {
+          // Display the decrypted text in the textarea
+          document.getElementById('decryptedText').value = decryptedText;
+
+          // Optionally, show a success message
+          showSuccessAlert();
+        })
+        .catch(error => {
+          console.error('Error during decryption:', error);
+        });
+    }
+
+    function changeLayout(mode) {
+      var encryptionLayout = document.getElementById("encryptionLayout");
+      var decryptionLayout = document.getElementById("decryptionLayout");
+      var dropdownButton = document.getElementById("dropdownMenuButton1");
+
+      if (mode === "encryption") {
+        encryptionLayout.style.display = "block";
+        decryptionLayout.style.display = "none";
+        dropdownButton.innerText = "Encryption";
+      } else if (mode === "decryption") {
+        encryptionLayout.style.display = "none";
+        decryptionLayout.style.display = "block";
+        dropdownButton.innerText = "Decryption";
+      }
+    }
+
+    document.getElementById('imageInput').addEventListener('change', function (event) {
+      // Preview selected image
+      var imgPreview = document.getElementById('imgPreview');
+      imgPreview.src = URL.createObjectURL(event.target.files[0]);
+      imgPreview.style.display = 'block';
+    });
+
+    document.getElementById('stegoImageInput').addEventListener('change', function (event) {
+      // Preview selected stego image
+      var stegoImgPreview = document.getElementById('stegoImgPreview');
+      stegoImgPreview.src = URL.createObjectURL(event.target.files[0]);
+      stegoImgPreview.style.display = 'block';
+    });
+
+    // Function to save encrypted image
+    async function saveEncryptedImage() {
+      // First, get the current source of the encrypted image preview
+      var encryptedImgSrc = document.getElementById('encryptedImgPreview').src;
+
+      // Check if the source is not empty
+      if (encryptedImgSrc) {
+        // Create an anchor element for download
+        var downloadLink = document.createElement('a');
+        downloadLink.href = encryptedImgSrc;
+
+        // Provide a default filename for the downloaded image
+        downloadLink.download = 'encrypted_image.png';
+
+        // Append the anchor to the document
+        document.body.appendChild(downloadLink);
+
+        // Programmatically click the anchor to trigger the download
+        downloadLink.click();
+
+        // Finally, remove the anchor from the document
+        document.body.removeChild(downloadLink);
+      } else {
+        alert('No encrypted image available to save.');
+      }
+    }
+
+
+    async function saveDecryptedText() {
+      // Get the decrypted text
+      var decryptedText = document.getElementById('decryptedText').value;
+
+      // Check if the text is available
+      if (decryptedText) {
+        // Convert the text to a Blob
+        var blob = new Blob([decryptedText], { type: 'text/plain' });
+
+        // Create a temporary download link element
+        var downloadLink = document.createElement('a');
+        downloadLink.href = URL.createObjectURL(blob);
+        downloadLink.download = 'decrypted_text.txt';
+
+        // Append the download link to the document body
+        document.body.appendChild(downloadLink);
+
+        // Programmatically click the download link to trigger the download
+        downloadLink.click();
+
+        // Remove the download link from the document body
+        document.body.removeChild(downloadLink);
+
+        // Optionally, show a success message
+        showSuccessAlert();
+      } else {
+        console.error('No decrypted text available to save.');
+      }
+    }
+
+  </script>
+  <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+
+</body>
+
+</html>
